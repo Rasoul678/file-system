@@ -1,15 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React, { createContext } from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { FileSystem } from "./utils/fileSystem";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const rootElement = document.getElementById("root") as HTMLElement;
+const root = ReactDOM.createRoot(rootElement);
+
+const fs = new FileSystem();
+
+export const FileSystemContext = createContext<FileSystem>(fs);
+
 root.render(
   <React.StrictMode>
-    <App />
+    <FileSystemContext.Provider value={fs}>
+      <App />
+    </FileSystemContext.Provider>
   </React.StrictMode>
 );
 
