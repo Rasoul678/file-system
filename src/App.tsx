@@ -5,22 +5,22 @@ import Heading from "./components/Heading";
 import BackIcon from "./components/Icons/Back";
 import Box from "./components/Other/Box";
 import DirectoryContent from "./DirectoryContent";
-import { FileSystemContext } from "./index";
-import { Directory, FileItem } from "./utils/fileSystem";
+import { FileSystemContext } from "./context/FileSystemContext";
+// import { Directory, FileItem } from "./utils/fileSystem";
 import Modal from "./components/Modal";
 import ModalContent from "./components/Modal/ModalContent";
+import Breadcrumb from "./components/Breadcrumb";
 
 const App = () => {
-  const fs = useContext(FileSystemContext);
+  const context = useContext(FileSystemContext);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [content, setContent] = useState<(Directory | FileItem)[]>([]);
   const [isShown, setIsShown] = useState(false);
 
   const handleCreateFolder = (name: string | undefined) => {
     if (name) {
       try {
-        fs.createDirectory(name);
-        setContent(fs.content);
+        context?.fs.createDirectory(name);
+        context?.setContent(context?.fs.content);
         setIsShown(false);
       } catch (error: any) {
         console.log(error.message);
@@ -35,15 +35,21 @@ const App = () => {
       const fileList = Array.from(files);
 
       fileList.forEach((file) => {
-        fs.createFile(file.name, "", file);
+        context?.fs.createFile(file.name, "", file);
       });
     }
-    setContent(fs.content);
+    context?.setContent(context?.fs.content);
 
     e.target.value = "";
   };
 
   const closeModal = useCallback(() => setIsShown(false), []);
+
+  const handleGoBack = () => {
+    context?.fs.goBack();
+    context?.setCurrentPath(context?.fs.currentDirectoryPath);
+    context?.setContent(context?.fs.content);
+  };
 
   return (
     <Box style={{ padding: "1.5rem" }}>
@@ -64,13 +70,16 @@ const App = () => {
         style={{ padding: "1.5rem", marginBottom: "5rem" }}
         bgColor="#2D373D"
       >
-        <Button
-          title="Back"
-          style={{ width: "1.2rem", borderRadius: "50%" }}
-          onClick={() => console.log("go back")}
-        >
-          <BackIcon size={30} />
-        </Button>
+        <Box row>
+          <Button
+            title="Back"
+            style={{ width: "1.2rem", borderRadius: "50%" }}
+            onClick={handleGoBack}
+          >
+            <BackIcon size={30} />
+          </Button>
+          <Breadcrumb items={context?.currentPath} />
+        </Box>
         <Box row>
           <Button
             title="Create Folder"
@@ -98,7 +107,7 @@ const App = () => {
           </Button>
         </Box>
       </Card>
-      <DirectoryContent content={content} />
+      <DirectoryContent />
     </Box>
   );
 };

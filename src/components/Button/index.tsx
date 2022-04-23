@@ -15,7 +15,7 @@ const StyledButton = style(Box)`
     background-color: ${(props: Pick<ButtonProps, "variant">) =>
       props.variant === "primary" ? "#FFF" : "#111"};
     color: ${(props: Pick<ButtonProps, "variant">) =>
-    props.variant === "primary" ? "#111" : "#FFF"};
+      props.variant === "primary" ? "#111" : "#FFF"};
     border-radius: 1.5rem;
     padding: 1rem;
     width: max-content;
@@ -25,6 +25,14 @@ const StyledButton = style(Box)`
     align-items: center;
     cursor: pointer;
     text-transform: uppercase;
+    transition: all 0.3s ease-in-out;
+
+    :hover {
+      background-color: ${(props: Pick<ButtonProps, "variant">) =>
+        props.variant === "primary" ? "#111" : "#CCC"};
+      color: ${(props: Pick<ButtonProps, "variant">) =>
+        props.variant === "primary" ? "#CCC" : "#111"};
+    }
 `;
 
 export default Button;

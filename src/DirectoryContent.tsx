@@ -3,41 +3,42 @@ import Card from "./components/Card";
 import EmptyCard from "./components/Card/EmptyCard";
 import Heading from "./components/Heading";
 import Box from "./components/Other/Box";
-import { Directory, FileItem } from "./utils/fileSystem";
 import { bytesToSize } from "./utils/helpers";
-import { FileSystemContext } from "./index";
+import { FileSystemContext } from "./context/FileSystemContext";
 
-type Item = Directory | FileItem;
+interface DirectoryContentProps {}
 
-interface DirectoryContentProps {
-  content: Item[];
-}
-
-const DirectoryContent: React.FC<DirectoryContentProps> = ({ content }) => {
-  const fs = useContext(FileSystemContext);
+const DirectoryContent: React.FC<DirectoryContentProps> = () => {
+  const context = useContext(FileSystemContext);
 
   const dirContent = useMemo(() => {
-    return content.filter((item: any) => item.constructor.name === "Directory");
-  }, [content]);
+    return context?.content.filter(
+      (item: any) => item.constructor.name === "Directory"
+    );
+  }, [context?.content]);
 
   const fileContent = useMemo(() => {
-    return content.filter((item: any) => item.constructor.name === "FileItem");
-  }, [content]);
+    return context?.content.filter(
+      (item: any) => item.constructor.name === "FileItem"
+    );
+  }, [context?.content]);
 
   const handleOpenFolder = (path: string) => {
-    fs.openDirectory(path);
-    console.log(fs);
+    context?.fs.openDirectory(path);
+    context?.setCurrentPath(context?.fs.currentDirectoryPath);
+    context?.setContent(context?.fs.content);
+    // console.log(context?.fs.currentDirectoryPath);
   };
 
   return (
     <Box>
-      {content.length === 0 ? (
+      {context?.content.length === 0 ? (
         <EmptyCard />
       ) : (
         <>
           <Heading level={3}>Directory:</Heading>
           <Box row style={{ justifyContent: "stretch", flexWrap: "wrap" }}>
-            {dirContent.map((item: any, index: number) => {
+            {dirContent?.map((item: any, index: number) => {
               return (
                 <Card
                   hoverable
@@ -59,7 +60,7 @@ const DirectoryContent: React.FC<DirectoryContentProps> = ({ content }) => {
           </Box>
           <Heading level={3}>File:</Heading>
           <Box row style={{ justifyContent: "stretch", flexWrap: "wrap" }}>
-            {fileContent.map((item: any, index: number) => {
+            {fileContent?.map((item: any, index: number) => {
               return (
                 <Card
                   hoverable

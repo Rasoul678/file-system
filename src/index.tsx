@@ -1,22 +1,18 @@
-import React, { createContext } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { FileSystem } from "./utils/fileSystem";
+import FileSystemProvider from "./context/FileSystemContext";
 
 const rootElement = document.getElementById("root") as HTMLElement;
 const root = ReactDOM.createRoot(rootElement);
 
-const fs = new FileSystem();
-
-export const FileSystemContext = createContext<FileSystem>(fs);
-
 root.render(
   <React.StrictMode>
-    <FileSystemContext.Provider value={fs}>
+    <FileSystemProvider>
       <App />
-    </FileSystemContext.Provider>
+    </FileSystemProvider>
   </React.StrictMode>
 );
 
