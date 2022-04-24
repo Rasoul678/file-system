@@ -5,6 +5,7 @@ import Heading from "./components/Heading";
 import Box from "./components/Other/Box";
 import { bytesToSize } from "./utils/helpers";
 import { FileSystemContext } from "./context/FileSystemContext";
+import ContextMenu from "./components/ContextMenu";
 
 interface DirectoryContentProps {}
 
@@ -27,7 +28,6 @@ const DirectoryContent: React.FC<DirectoryContentProps> = () => {
     context?.fs.openDirectory(path);
     context?.setCurrentPath(context?.fs.currentDirectoryPath);
     context?.setContent(context?.fs.content);
-    // console.log(context?.fs.currentDirectoryPath);
   };
 
   return (
@@ -36,6 +36,7 @@ const DirectoryContent: React.FC<DirectoryContentProps> = () => {
         <EmptyCard />
       ) : (
         <>
+          <ContextMenu />
           <Heading level={3}>Directory:</Heading>
           <Box row style={{ justifyContent: "stretch", flexWrap: "wrap" }}>
             {dirContent?.map((item: any, index: number) => {

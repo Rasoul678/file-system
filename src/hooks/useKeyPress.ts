@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 interface KeyPressProps {
   targetKey: string;
@@ -8,19 +8,22 @@ interface KeyPressProps {
 const useKeyPress = (props: KeyPressProps) => {
   const { targetKey, callback } = props;
 
-  useEffect(() => {
-    function handleKeyPress(event: KeyboardEvent) {
+  const handleKeyPress = useCallback(
+    (event: KeyboardEvent) => {
       if (event.key === targetKey) {
         callback?.();
       }
-    }
+    },
+    [targetKey, callback]
+  );
 
+  useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
 
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [targetKey, callback]);
+  }, [handleKeyPress]);
 };
 
 export default useKeyPress;
