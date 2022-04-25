@@ -35,25 +35,27 @@ const ModalContent: React.FC<ModalContentProps> = (props) => {
           {header}
         </Heading>
       )}
-      {children ? (
-        children
-      ) : (
-        <Box style={{ margin: "2rem 0" }}>
-          <Input
-            type="text"
-            autoFocus
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-          />
+      <Box column style={{ alignItems: "stretch", gap: "2rem" }}>
+        {children ? (
+          children
+        ) : (
+          <Box>
+            <Input
+              type="text"
+              autoFocus
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+          </Box>
+        )}
+        <Box row style={{ justifyContent: "center", gap: "7rem" }}>
+          <Button style={{ backgroundColor: "#D13E39" }} onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button style={{ backgroundColor: "#56A844" }} onClick={handleSubmit}>
+            Submit
+          </Button>
         </Box>
-      )}
-      <Box row style={{ justifyContent: "space-around", marginTop: "4rem" }}>
-        <Button style={{ backgroundColor: "#D13E39" }} onClick={handleCancel}>
-          Cancel
-        </Button>
-        <Button style={{ backgroundColor: "#56A844" }} onClick={handleSubmit}>
-          Save
-        </Button>
       </Box>
     </Card>
   );

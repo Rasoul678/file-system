@@ -11,12 +11,48 @@ import Modal from "./components/Modal";
 import ModalContent from "./components/Modal/ModalContent";
 import Breadcrumb from "./components/Breadcrumb";
 import { contextType } from "./types";
+import MoveContent from "./components/Modal/MoveContent";
+import DeleteContent from "./components/Modal/DeleteContent";
 
 const App = () => {
   const context = useContext(FileSystemContext);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleCreateFolder = (name: string | undefined) => {
+  //! Execute appropriate action when modal submit clicked
+  const handleSubmit = (name: string | undefined) => {
+    switch (context?.modalType) {
+      case contextType.RENAME:
+        renameFolder(name);
+        break;
+
+      case contextType.COPY:
+        break;
+
+      case contextType.DELETE:
+        deleteItem();
+        break;
+
+      case contextType.MOVE:
+        moveItem();
+        break;
+
+      default:
+        createFolder(name);
+        break;
+    }
+  };
+
+  const moveItem = () => {};
+
+  //! Delete item on modal submit
+  const deleteItem = () => {
+    context?.fs.removeItem(context?.currentItem?.name!);
+    context?.setContent(context.fs.content);
+    closeModal();
+  };
+
+  //! Create folder on modal submit
+  const createFolder = (name: string | undefined) => {
     if (name) {
       try {
         context?.fs.createDirectory(name);
@@ -28,16 +64,21 @@ const App = () => {
     }
   };
 
-  const handleRenameFolder = (newName: string | undefined) => {
+  //! Rename folder on modal submit
+  const renameFolder = (newName: string | undefined) => {
     if (newName) {
-      console.log(newName);
-      context?.fs.renameItem(context?.currentItem?.name!, newName);
-      context?.setContent(context?.fs.content);
-      context?.setCurrentItem(null);
-      closeModal();
+      try {
+        context?.fs.renameItem(context?.currentItem?.name!, newName);
+        context?.setContent(context?.fs.content);
+        context?.setCurrentItem(null);
+        closeModal();
+      } catch (error: any) {
+        console.log(error.message);
+      }
     }
   };
 
+  //! Upload file on button click
   const handleUploadFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
 
@@ -53,21 +94,28 @@ const App = () => {
     e.target.value = "";
   };
 
+  //! Close modal on cancel click
   const closeModal = useCallback(() => {
     context?.setIsModalOpen(false);
     context?.setModalType(null);
+    context?.setCurrentItem(null);
   }, [context]);
 
+  //! Go back to previous folder on back button click
   const handleGoBack = () => {
     context?.fs.goBack();
     context?.setCurrentPath(context?.fs.currentDirectoryPath);
     context?.setContent(context?.fs.content);
   };
 
+  //! Get modal content based on modal type
   const getContent = useCallback(() => {
     switch (context?.modalType) {
-      case contextType.RENAME:
-        return null;
+      case contextType.DELETE:
+        return <DeleteContent />;
+
+      case contextType.MOVE:
+        return <MoveContent />;
 
       default:
         return null;
@@ -82,13 +130,9 @@ const App = () => {
         modalContent={
           <ModalContent
             header={context?.modalType || "Create Folder"}
-            value={context?.currentItem?.name}
+            value={context?.modalType ? context?.currentItem?.name : undefined}
             onCancel={closeModal}
-            onSubmit={(text) =>
-              context?.modalType === "rename"
-                ? handleRenameFolder(text)
-                : handleCreateFolder(text)
-            }
+            onSubmit={handleSubmit}
           >
             {getContent()}
           </ModalContent>

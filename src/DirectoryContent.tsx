@@ -27,12 +27,14 @@ const DirectoryContent: React.FC<DirectoryContentProps> = () => {
     );
   }, [context?.content]);
 
+  //! Open a folder and show the content
   const handleOpenFolder = (path: string) => {
     context?.fs.openDirectory(path);
     context?.setCurrentPath(context?.fs.currentDirectoryPath);
     context?.setContent(context?.fs.content);
   };
 
+  //! Show context menu for item
   const handleContextMenu = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     item: any
@@ -43,6 +45,7 @@ const DirectoryContent: React.FC<DirectoryContentProps> = () => {
     context?.setCurrentItem(item);
   };
 
+  //! Close context menu on click outside
   useEffect(() => {
     function handleClick() {
       setIsOpen(false);
@@ -55,6 +58,7 @@ const DirectoryContent: React.FC<DirectoryContentProps> = () => {
     };
   }, []);
 
+  //! Take appropriate action when context menu item clicked
   const onItemClick = (actionType: contextType) => {
     switch (actionType) {
       case contextType.RENAME:
@@ -64,6 +68,14 @@ const DirectoryContent: React.FC<DirectoryContentProps> = () => {
       case contextType.COPY:
         context?.fs.copyItem(context?.currentItem?.name!);
         context?.setContent(context.fs.content);
+        break;
+      case contextType.DELETE:
+        context?.setIsModalOpen(true);
+        context?.setModalType(contextType.DELETE);
+        break;
+      case contextType.MOVE:
+        context?.setIsModalOpen(true);
+        context?.setModalType(contextType.MOVE);
         break;
 
       default:
