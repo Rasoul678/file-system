@@ -4,7 +4,7 @@ import * as Styled from "./Modal.styles";
 import useKeyPress from "../../hooks/useKeyPress";
 
 export interface ModalProps {
-  isShown: boolean;
+  isShown: boolean | undefined;
   hide: () => void;
   modalContent: JSX.Element | null;
   headerText?: string;

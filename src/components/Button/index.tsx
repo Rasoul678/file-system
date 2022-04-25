@@ -24,7 +24,6 @@ const StyledButton = style(Box)`
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    text-transform: uppercase;
     transition: all 0.3s ease-in-out;
 
     :hover {

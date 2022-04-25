@@ -17,6 +17,7 @@ const Wrapper = style(Heading)`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-transform: capitalize;
   `;
 
 export default Wrapper;

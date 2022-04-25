@@ -4,3 +4,10 @@ export type Content = Directory | File;
 export type ContentType = "d" | "f";
 
 export type HeadingTag = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+
+export enum contextType {
+  RENAME = "rename",
+  DELETE = "delete",
+  MOVE = "move",
+  COPY = "copy",
+}

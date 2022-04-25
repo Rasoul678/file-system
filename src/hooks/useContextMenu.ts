@@ -1,14 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 
-const useContextMenu = (needle?: string) => {
+const useContextMenu = () => {
   const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
   const [isOpen, setIsOpen] = useState(false);
 
   const handleContextMenu = useCallback((e: MouseEvent) => {
     e.preventDefault(); //! prevent default browser context menu
-    console.log(e.target);
-
-    if (needle) return;
     setAnchorPoint({ x: e.pageX, y: e.pageY });
     setIsOpen(true);
   }, []);

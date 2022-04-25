@@ -1,19 +1,19 @@
 import React from "react";
 import Box from "../Other/Box";
 
-interface BackProps {
+interface MoveProps {
   size?: number | string;
   color?: string;
 }
 
-const Back: React.FC<BackProps> = ({ size, color = "#FFF" }) => {
+const Move: React.FC<MoveProps> = ({ size, color = "#2c3e50" }) => {
   return (
     <Box column>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="icon icon-tabler icon-tabler-arrow-left"
+        className="icon icon-tabler icon-tabler-replace"
         width={size}
-        viewBox="0 0 23 23"
+        viewBox="0 0 24 24"
         strokeWidth="2"
         stroke={color}
         fill="none"
@@ -21,12 +21,13 @@ const Back: React.FC<BackProps> = ({ size, color = "#FFF" }) => {
         strokeLinejoin="round"
       >
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-        <line x1="5" y1="12" x2="19" y2="12" />
-        <line x1="5" y1="12" x2="11" y2="18" />
-        <line x1="5" y1="12" x2="11" y2="6" />
+        <rect x="3" y="3" width="6" height="6" rx="1" />
+        <rect x="15" y="15" width="6" height="6" rx="1" />
+        <path d="M21 11v-3a2 2 0 0 0 -2 -2h-6l3 3m0 -6l-3 3" />
+        <path d="M3 13v3a2 2 0 0 0 2 2h6l-3 -3m0 6l3 -3" />
       </svg>
     </Box>
   );
 };
 
-export default Back;
+export default Move;

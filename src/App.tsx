@@ -1,4 +1,4 @@
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useRef } from "react";
 import Button from "./components/Button";
 import Card from "./components/Card";
 import Heading from "./components/Heading";
@@ -10,21 +10,31 @@ import { FileSystemContext } from "./context/FileSystemContext";
 import Modal from "./components/Modal";
 import ModalContent from "./components/Modal/ModalContent";
 import Breadcrumb from "./components/Breadcrumb";
+import { contextType } from "./types";
 
 const App = () => {
   const context = useContext(FileSystemContext);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [isShown, setIsShown] = useState(false);
 
   const handleCreateFolder = (name: string | undefined) => {
     if (name) {
       try {
         context?.fs.createDirectory(name);
         context?.setContent(context?.fs.content);
-        setIsShown(false);
+        closeModal();
       } catch (error: any) {
         console.log(error.message);
       }
+    }
+  };
+
+  const handleRenameFolder = (newName: string | undefined) => {
+    if (newName) {
+      console.log(newName);
+      context?.fs.renameItem(context?.currentItem?.name!, newName);
+      context?.setContent(context?.fs.content);
+      context?.setCurrentItem(null);
+      closeModal();
     }
   };
 
@@ -43,7 +53,10 @@ const App = () => {
     e.target.value = "";
   };
 
-  const closeModal = useCallback(() => setIsShown(false), []);
+  const closeModal = useCallback(() => {
+    context?.setIsModalOpen(false);
+    context?.setModalType(null);
+  }, [context]);
 
   const handleGoBack = () => {
     context?.fs.goBack();
@@ -51,18 +64,34 @@ const App = () => {
     context?.setContent(context?.fs.content);
   };
 
+  const getContent = useCallback(() => {
+    switch (context?.modalType) {
+      case contextType.RENAME:
+        return null;
+
+      default:
+        return null;
+    }
+  }, [context]);
 
   return (
     <Box style={{ padding: "1.5rem" }}>
       <Modal
-        isShown={isShown}
+        isShown={context?.isModalOpen}
         hide={closeModal}
         modalContent={
           <ModalContent
-            header="Create Folder"
+            header={context?.modalType || "Create Folder"}
+            value={context?.currentItem?.name}
             onCancel={closeModal}
-            onSubmit={(text) => handleCreateFolder(text)}
-          />
+            onSubmit={(text) =>
+              context?.modalType === "rename"
+                ? handleRenameFolder(text)
+                : handleCreateFolder(text)
+            }
+          >
+            {getContent()}
+          </ModalContent>
         }
       />
       <Heading>Media File System</Heading>
@@ -85,7 +114,7 @@ const App = () => {
           <Button
             title="Create Folder"
             style={{ padding: "1rem" }}
-            onClick={() => setIsShown(true)}
+            onClick={() => context?.setIsModalOpen(true)}
           >
             create folder
           </Button>

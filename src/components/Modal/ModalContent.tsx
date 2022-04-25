@@ -7,19 +7,16 @@ import Input from "../Input";
 import useKeyPress from "../../hooks/useKeyPress";
 
 interface ModalContentProps {
+  children?: React.ReactNode;
   header?: React.ReactNode | string;
   value?: string;
   onSubmit?: (text: string | undefined) => void;
   onCancel?: () => void;
 }
 
-const ModalContent: React.FC<ModalContentProps> = ({
-  header,
-  value,
-  onCancel,
-  onSubmit,
-}) => {
-  const [inputValue, setInputValue] = useState(value);
+const ModalContent: React.FC<ModalContentProps> = (props) => {
+  const { header, value, onCancel, onSubmit, children } = props;
+  const [inputValue, setInputValue] = useState(value || "");
 
   const handleSubmit = () => {
     onSubmit?.(inputValue);
@@ -38,14 +35,18 @@ const ModalContent: React.FC<ModalContentProps> = ({
           {header}
         </Heading>
       )}
-      <Box style={{ margin: "2rem 0" }}>
-        <Input
-          type="text"
-          autoFocus
-          value={value}
-          onChange={(e) => setInputValue(e.target.value)}
-        />
-      </Box>
+      {children ? (
+        children
+      ) : (
+        <Box style={{ margin: "2rem 0" }}>
+          <Input
+            type="text"
+            autoFocus
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
+        </Box>
+      )}
       <Box row style={{ justifyContent: "space-around", marginTop: "4rem" }}>
         <Button style={{ backgroundColor: "#D13E39" }} onClick={handleCancel}>
           Cancel
